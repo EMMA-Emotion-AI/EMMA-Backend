@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "The Backend of EMMA-AI",
   "main": "src/app.js",
+  "engines": {
+    "node": ">=13.0.1"
+  },
+  "engineStrict": true,
   "scripts": {
     "start": "node ./src/app.js",
     "lint": "eslint ./src",
@@ -17,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/EMMA-Emotion-AI/EMMA-Backend/issues"
   },
-  "homepage": "https://emma-ai.com"
+  "homepage": "https://emma-ai.com",
+  "devDependencies": {
+    "@types/node": ">=11.0.0"
+  }
 }
