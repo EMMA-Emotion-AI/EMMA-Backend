@@ -1,0 +1,13 @@
+{
+    "server": {
+        "port": 1337
+    },
+    "meta": {
+        "name": "E.M.M.A. - Emotion Monitoring Algorithm"
+    },
+    "ratelimit": {
+        "enabled": true,
+        "timeframe": 15,
+        "max_requests": 100
+    }
+}
