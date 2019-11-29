@@ -1,0 +1,21 @@
+{
+  "name": "emma-backend",
+  "version": "1.0.0",
+  "description": "The Backend of EMMA-AI",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "lint": "eslint ./src",
+    "dev": "npm run lint && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EMMA-Emotion-AI/EMMA-Backend.git"
+  },
+  "author": "Chris (NullDev)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EMMA-Emotion-AI/EMMA-Backend/issues"
+  },
+  "homepage": "https://emma-ai.com"
+}
