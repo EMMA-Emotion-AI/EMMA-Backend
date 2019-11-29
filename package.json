@@ -24,5 +24,11 @@
   "homepage": "https://emma-ai.com",
   "devDependencies": {
     "@types/node": ">=11.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "helmet": "^3.21.2",
+    "serve-favicon": "^2.5.0"
   }
 }
