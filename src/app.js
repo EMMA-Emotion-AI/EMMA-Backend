@@ -26,8 +26,6 @@ let getRoutes = require("./services/getRoutes");
 // Endpoints
 let router = require("./routes/router");
 
-let err404Handler = require("./services/err404Handler");
-
 let version = conf.getVersion();
 let appname = conf.getName();
 let devname = conf.getAuthor();
@@ -67,15 +65,10 @@ app.use(bodyParser.urlencoded({
 // app.use(favicon(path.resolve("src", "assets", "favicon.png")));
 
 // API's
-app.get("/", router);
+app.use("/", router);
 
-// Errors
-app.get("*", err404Handler);
-
-let routes = getRoutes(app);
-for (let i in routes){
-    log.info(`Route ${routes[i].path} registered with methods ${(routes[i].methods).join(", ")}`);
-}
+let routes = getRoutes(router);
+for (let i in routes) log.info(`Route ${routes[i].path} registered with methods ${(routes[i].methods).join(", ")}`);
 
 process.on("unhandledRejection", (err, promise) => {
     log.error(`Unhandled rejection (promise: ${promise}, reason: ${err})`);
