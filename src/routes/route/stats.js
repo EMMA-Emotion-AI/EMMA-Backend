@@ -7,6 +7,9 @@
 // Utils
 let meta = require("../../utils/meta");
 
+// Services
+let responder = require("../../services/responder");
+
 /**
  * Sends status informations and meta data
  *
@@ -16,7 +19,7 @@ let meta = require("../../utils/meta");
  */
 let stats = function(req, res){
     meta((data) => {
-        let respone = {
+        let response = {
             "status": "ok",
             "nodejs_vserion": data.nodeversion,
             "current_pid": process.pid,
@@ -29,9 +32,7 @@ let stats = function(req, res){
             "client_ip": (req.headers["x-forwarded-for"] || req.connection.remoteAddress)
         };
 
-        return res.set({
-            "Content-Type": "application/json; charset=utf-8"
-        }).status(200).send(respone);
+        responder(res, response, 200);
     });
 };
 

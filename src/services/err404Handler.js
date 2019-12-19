@@ -4,12 +4,10 @@
 // = Copyright (c) EMMA = //
 // ====================== //
 
-module.exports = function(req, res){
-    let respone = {
-        "error": "route not found"
-    };
+let responder = require("./responder");
 
-    res.set({
-        "Content-Type": "application/json; charset=utf-8"
-    }).status(404).send(respone);
+module.exports = function(req, res){
+    responder(res, {
+        "error": "route not found"
+    }, 404);
 };

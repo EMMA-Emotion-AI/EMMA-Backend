@@ -10,40 +10,31 @@ let Classifier = require("./classifier");
 // Utils
 let isset = (obj) => !!(obj && obj !== null && (typeof obj === "string" || typeof obj === "number") || obj === 0);
 
+// Services
+let responder = require("../services/responder");
+
 // Entry point
-let evaluate = function(req, res, app){
+let evaluate = function(req, res){
     let text = req.query.text;
-    let response;
 
-    if (!isset(text)){
-        response = {
+    if (!isset(text)) {
+        return responder(res, {
             "error": "no text provided"
-        };
-
-        return res.set({
-            "Content-Type": "application/json; charset=utf-8"
-        }).status(400).send(response);
+        }, 400);
     }
 
     let classifier = new Classifier(0.05); // Tolerance of 0.05
+
     classifier.classify(text, (err, result) => {
         if (err){
-            response = {
+            return responder(res, {
                 "error": "internal server error"
-            };
-
-            return res.set({
-                "Content-Type": "application/json; charset=utf-8"
-            }).status(500).send(response);
+            }, 500);
         }
 
-        response = {
+        responder(res, {
             "status": result
-        };
-
-        return res.set({
-            "Content-Type": "application/json; charset=utf-8"
-        }).status(200).send(response);
+        }, 200);
     });
 };
 
