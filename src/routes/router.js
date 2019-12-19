@@ -12,9 +12,7 @@ let express = require("express");
 let router = express.Router();
 
 // Routes
-// eslint-disable-next-line no-unused-vars
-router.get("/", (req, res, app) => {
-    res.send({ status: "ok" });
-});
+router.get("/",      require("../ai-worker/evaluator").evaluate);
+router.get("/stats", require("./route/stats"));
 
 module.exports = router;
