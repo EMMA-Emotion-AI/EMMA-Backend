@@ -13,18 +13,38 @@ let isset = (obj) => !!(obj && obj !== null && (typeof obj === "string" || typeo
 // Entry point
 let evaluate = function(req, res, app){
     let text = req.query.text;
+    let response;
 
     if (!isset(text)){
-        let respone = {
+        response = {
             "error": "no text provided"
         };
 
         return res.set({
             "Content-Type": "application/json; charset=utf-8"
-        }).status(400).send(respone);
+        }).status(400).send(response);
     }
 
     let classifier = new Classifier(0.05); // Tolerance of 0.05
+    classifier.classify(text, (err, result) => {
+        if (err){
+            response = {
+                "error": "internal server error"
+            };
+
+            return res.set({
+                "Content-Type": "application/json; charset=utf-8"
+            }).status(500).send(response);
+        }
+
+        response = {
+            "status": result
+        };
+
+        return res.set({
+            "Content-Type": "application/json; charset=utf-8"
+        }).status(200).send(response);
+    });
 };
 
 module.exports = {
