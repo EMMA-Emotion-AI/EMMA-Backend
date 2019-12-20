@@ -29,6 +29,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "helmet": "^3.21.2",
+    "rethinkdb": "^2.4.2",
     "serve-favicon": "^2.5.0"
   }
 }
