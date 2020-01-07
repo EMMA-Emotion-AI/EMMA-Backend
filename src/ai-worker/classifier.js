@@ -4,17 +4,49 @@
 // = Copyright (c) EMMA = //
 // ====================== //
 
+// Corpus
+let { Corpus, Document } = require("./corpus");
+
+// Helper
+let { getStopwords } = require("./helper");
+
 class Classifier {
     constructor(tolerance = 0.05){
         this.tolerance = tolerance;
 
         this.totalProbability = 0;
         this.inverseTotalProbability = 0;
+
+        this.positiveCorpus = new Corpus();
+        this.negativeCorpus = new Corpus();
+
+        this.positiveCorpus.loadFromDatabase("positive");
+        this.negativeCorpus.loadFromDatabase("negative");
     }
 
     classify(text, callback){
-        // TODO: Everything
-        callback(null, "ok");
+        let stopWords = getStopwords();
+
+        new Document(text).eachWord(word => {
+            if (stopWords.includes(word)) return;
+
+            let positiveMatches = this.positiveCorpus.tokenCount(word);
+            let negativeMatches = this.negativeCorpus.tokenCount(word);
+
+            let probability = this.calculateProbability(positiveMatches, this.positiveCorpus.totalTokens, negativeMatches, this.negativeCorpus.totalTokens);
+            this.recordProbability(probability);
+        });
+
+        let combinedProbability = this.combineProbabilities();
+        let probabilityPercentage = Math.round(((combinedProbability * 100) * 100) / 100) + "%";
+        let emotionTone = this.evaluateEmotion(combinedProbability);
+
+        callback(null, {
+            error: 0,
+            emotion_tone: emotionTone,
+            emotion_value: combinedProbability,
+            emotion_percentage: probabilityPercentage
+        });
     }
 
     calculateProbability(positiveMatches, positiveTotal, negativeMatches, negativeTotal){
