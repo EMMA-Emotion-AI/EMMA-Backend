@@ -2,16 +2,13 @@
     "server": {
         "port": 1337
     },
-    "meta": {
-        "name": "E.M.M.A. - Emotion Monitoring Algorithm"
-    },
     "database": {
         "host": "0.0.0.0",
         "port": 28015,
         "user": "",
         "password": "",
         "db": "emma",
-        "positiveTable": "positive",
-        "negativeTable": "negative"
+        "positive_table": "positive",
+        "negative_table": "negative"
     }
 }
