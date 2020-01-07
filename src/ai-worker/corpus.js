@@ -4,19 +4,54 @@
 // = Copyright (c) EMMA = //
 // ====================== //
 
-// Core Modules
-let path = require("path");
-let fs = require("fs");
-
 // Dependencies
 let rethink = require("rethinkdb");
 
 // Utils
-let config = require("../utils/configHandler").getConfig();
 let log = require("../utils/logger");
+let config = require("../utils/configHandler").getConfig();
 
-let _ = null;
+// Helper
+let { getWords, countTotalEntries } = require("./helper");
 
+rethink.connect({
+    host: config.database.host,
+    port: config.database.port,
+    db: config.database.db,
+    user: config.database.user,
+    password: config.database.password
+}).then(() => log.done("Connected to RethinkDB!"));
+
+/**
+ * Retrives data from a specific table
+ *
+ * @param {string} table
+ * @returns {string} data
+ */
+let retriveFromDb = function(table){
+    return String(rethink.table(table).getAll());
+};
+
+/**
+ * Iterator function for the documents
+ *
+ * @class Document
+ */
+class Document {
+    constructor(content){
+        this.words = getWords(content);
+    }
+
+    eachWord(callback){
+        this.words.map(callback);
+    }
+}
+
+/**
+ * Main class to load entries from the Database
+ *
+ * @class Corpus
+ */
 class Corpus {
     constructor(){
         this.tokens = {};
@@ -24,50 +59,33 @@ class Corpus {
     }
 
     add(document){
-        let self = this;
-        document.eachWord((word) => {
-            self.tokens[word] = (self.tokens[word] || 0) + 1;
-        });
+        document.eachWord((word) => (this.tokens[word] = (this.tokens[word] || 0) + 1));
     }
 
-    loadFromDatabase(){
-        // TODO
+    async loadFromDatabase(tone){
+        let data = null;
+        switch(tone.toLowerCase()){
+            case "positive": {
+                data = await retriveFromDb(config.database.positive_table);
+                break;
+            }
+            case "negative": {
+                data = await retriveFromDb(config.database.negative_table);
+                break;
+            }
+            default: {
+                log.error("Invalid coprus option provided! Shutting down...");
+                process.exit(1);
+            }
+        }
+
+        data.split("\n").forEach(line => this.add(new Document(line)));
+        this.totalTokens = countTotalEntries(this.tokens);
     }
 
     tokenCount(word){
         return this.tokens[word] || 0;
     }
-
-    get stopwords(){
-        return (
-            "a,able,about,across,after,all,almost,also,am,among,an,and,any,are,as,at," +     /* a */
-            "be,because,been,but,by," +                                                      /* b */
-            "can,cannot,could," +                                                            /* c */
-            "dear,did,do,does," +                                                            /* d */
-            "either,else,ever,every," +                                                      /* e */
-            "for,from," +                                                                    /* f */
-            "get,got," +                                                                     /* g */
-            "had,has,have,he,her,hers,him,his,how,however," +                                /* h */
-            "i,if,in,into,is,it,its," +                                                      /* i */
-            "just," +                                                                        /* j */
-            "keep," +                                                                        /* k */
-            "least,let,like,likely," +                                                       /* l */
-            "may,me,might,most,must,my," +                                                   /* m */
-            "neither,no,nor,not," +                                                          /* n */
-            "of,off,often,on,only,or,other,our,own," +                                       /* o */
-            "probably," +                                                                    /* p */
-            "quick," +                                                                       /* q */
-            "rather,really," +                                                               /* r */
-            "said,say,says,she,should,since,so,some," +                                      /* s */
-            "than,that,the,their,them,then,there,these,they,this,tis,to,too,totally," +      /* t */
-            "us," +                                                                          /* u */
-            "view," +                                                                        /* v */
-            "wants,was,we,were,what,when,where,which,while,who,whom,why,will,with,would," +  /* w */
-            "" +                                                                             /* x */
-            "yet,you,your,yourself," +                                                       /* y */
-            "zero"                                                                           /* z */
-        ).split(",");
-    }
 }
 
-module.exports = Corpus;
+module.exports = { Corpus, Document };
