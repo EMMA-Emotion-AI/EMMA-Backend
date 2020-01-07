@@ -4,9 +4,6 @@
 // = Copyright (c) EMMA = //
 // ====================== //
 
-// Dependencies
-let rethink = require("rethinkdb");
-
 // Utils
 let log = require("../utils/logger");
 let config = require("../utils/configHandler").getConfig();
@@ -14,22 +11,34 @@ let config = require("../utils/configHandler").getConfig();
 // Helper
 let { getWords, countTotalEntries } = require("./helper");
 
-rethink.connect({
+// Dependencies
+let rethink = require("rethinkdbdash")({
     host: config.database.host,
     port: config.database.port,
     db: config.database.db,
     user: config.database.user,
     password: config.database.password
-}).then(() => log.done("Connected to RethinkDB!"));
+});
 
 /**
  * Retrives data from a specific table
  *
  * @param {string} table
- * @returns {string} data
+ * @returns {Promise<String>} data
  */
-let retriveFromDb = function(table){
-    return String(rethink.table(table).getAll());
+let retriveFromDb = async function(table){
+    let res = "";
+    await rethink.table(table)
+        .run()
+        .then(function(response){
+            response.forEach(data => {
+                res = res.concat(data.text, "\n");
+            });
+        })
+        .error(function(err){
+            console.log(err);
+        });
+    return String(res);
 };
 
 /**
