@@ -5,11 +5,11 @@
 // ====================== //
 
 // Core Modules
-// let path = require("path");
+let path = require("path");
 
 // Dependencies
 let express = require("express");
-// let favicon = require("serve-favicon");
+let favicon = require("serve-favicon");
 let bodyParser = require("body-parser");
 let cors = require("cors");
 let helmet = require("helmet");
@@ -62,7 +62,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-// app.use(favicon(path.resolve("src", "assets", "favicon.png")));
+app.use(favicon(path.resolve("src", "assets", "favicon.png")));
 
 // API's
 app.use("/", router);
