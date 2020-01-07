@@ -32,9 +32,7 @@ let evaluate = function(req, res){
             }, 500);
         }
 
-        responder(res, {
-            "status": result
-        }, 200);
+        responder(res, result, 200);
     });
 };
 
