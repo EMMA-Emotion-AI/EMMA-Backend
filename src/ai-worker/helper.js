@@ -6,8 +6,8 @@
 
 let getWords = function(input){
     let filtered = input.toString().replace(/[^0-9a-zA-Z ]/g, "");
-    let words = filtered.split(" ").map((word) => word.trim().toLowerCase());
-    return words.filter((word) => word.length > 0);
+    let words = filtered.split(" ").map(word => word.trim().toLowerCase());
+    return words.filter(word => word.length > 0);
 };
 
 let countTotalEntries = function(tokens){

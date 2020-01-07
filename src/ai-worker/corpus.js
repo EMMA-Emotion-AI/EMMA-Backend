@@ -21,24 +21,16 @@ let rethink = require("rethinkdbdash")({
 });
 
 /**
- * Retrives data from a specific table
+ *  Retrives data from a specific table
  *
- * @param {string} table
- * @returns {Promise<String>} data
+ * @param {*} table
+ * @param {*} callback
  */
-let retriveFromDb = async function(table){
-    let res = "";
-    await rethink.table(table)
+let retriveFromDb = function(table, callback){
+    rethink.table(table)
         .run()
-        .then(function(response){
-            response.forEach(data => {
-                res = res.concat(data.text, "\n");
-            });
-        })
-        .error(function(err){
-            console.log(err);
-        });
-    return String(res);
+        .then(response => callback(response.map(e => e.text)))
+        .error(log.error);
 };
 
 /**
@@ -71,15 +63,22 @@ class Corpus {
         document.eachWord((word) => (this.tokens[word] = (this.tokens[word] || 0) + 1));
     }
 
-    async loadFromDatabase(tone){
-        let data = null;
+    loadFromDatabase(tone){
         switch(tone.toLowerCase()){
             case "positive": {
-                data = await retriveFromDb(config.database.positive_table);
+                log.info("Building positive corpus");
+                retriveFromDb(config.database.positive_table, data => {
+                    data.forEach(line => this.add(new Document(line)));
+                    this.totalTokens = countTotalEntries(this.tokens);
+                });
                 break;
             }
             case "negative": {
-                data = await retriveFromDb(config.database.negative_table);
+                log.info("Building negative corpus");
+                retriveFromDb(config.database.negative_table, data => {
+                    data.forEach(line => this.add(new Document(line)));
+                    this.totalTokens = countTotalEntries(this.tokens);
+                });
                 break;
             }
             default: {
@@ -87,9 +86,6 @@ class Corpus {
                 process.exit(1);
             }
         }
-
-        data.split("\n").forEach(line => this.add(new Document(line)));
-        this.totalTokens = countTotalEntries(this.tokens);
     }
 
     tokenCount(word){
