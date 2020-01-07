@@ -6,32 +6,9 @@
 
 // Utils
 let log = require("../utils/logger");
-let config = require("../utils/configHandler").getConfig();
 
 // Helper
 let { getWords, countTotalEntries } = require("./helper");
-
-// Dependencies
-let rethink = require("rethinkdbdash")({
-    host: config.database.host,
-    port: config.database.port,
-    db: config.database.db,
-    user: config.database.user,
-    password: config.database.password
-});
-
-/**
- *  Retrives data from a specific table
- *
- * @param {*} table
- * @param {*} callback
- */
-let retriveFromDb = function(table, callback){
-    rethink.table(table)
-        .run()
-        .then(response => callback(response.map(e => e.text)))
-        .error(log.error);
-};
 
 /**
  * Iterator function for the documents
@@ -54,38 +31,24 @@ class Document {
  * @class Corpus
  */
 class Corpus {
-    constructor(){
+    constructor(database){
         this.tokens = {};
         this.totalTokens = 0;
+        this.database = database;
     }
 
     add(document){
         document.eachWord((word) => (this.tokens[word] = (this.tokens[word] || 0) + 1));
     }
 
-    loadFromDatabase(tone){
-        switch(tone.toLowerCase()){
-            case "positive": {
-                log.info("Building positive corpus");
-                retriveFromDb(config.database.positive_table, data => {
-                    data.forEach(line => this.add(new Document(line)));
-                    this.totalTokens = countTotalEntries(this.tokens);
-                });
-                break;
-            }
-            case "negative": {
-                log.info("Building negative corpus");
-                retriveFromDb(config.database.negative_table, data => {
-                    data.forEach(line => this.add(new Document(line)));
-                    this.totalTokens = countTotalEntries(this.tokens);
-                });
-                break;
-            }
-            default: {
-                log.error("Invalid coprus option provided! Shutting down...");
-                process.exit(1);
-            }
-        }
+    async loadFromDatabase(table){
+        await this.database.table(table)
+            .run()
+            .then(response => {
+                response.map(e => e.text).forEach(line => this.add(new Document(line)));
+                this.totalTokens = countTotalEntries(this.tokens);
+            })
+            .error(log.error);
     }
 
     tokenCount(word){

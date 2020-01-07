@@ -10,18 +10,29 @@ let { Corpus, Document } = require("./corpus");
 // Helper
 let { getStopwords } = require("./helper");
 
+// Utils
+let config = require("../utils/configHandler").getConfig();
+
 class Classifier {
-    constructor(tolerance = 0.05){
+    constructor(tolerance = 0.05, database){
         this.tolerance = tolerance;
 
         this.totalProbability = 0;
         this.inverseTotalProbability = 0;
 
-        this.positiveCorpus = new Corpus();
-        this.negativeCorpus = new Corpus();
+        this.positiveCorpus = new Corpus(database);
+        this.negativeCorpus = new Corpus(database);
+    }
 
-        this.positiveCorpus.loadFromDatabase("positive");
-        this.negativeCorpus.loadFromDatabase("negative");
+    async initialize() {
+        await this.positiveCorpus.loadFromDatabase(config.database.positive_table);
+        await this.negativeCorpus.loadFromDatabase(config.database.negative_table);
+    }
+
+    static async create(tolerance, database){
+        const init = new Classifier(tolerance, database);
+        await init.initialize();
+        return init;
     }
 
     classify(text, callback){
