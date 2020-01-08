@@ -10,7 +10,8 @@
   "scripts": {
     "start": "node ./src/app.js",
     "lint": "eslint ./src",
-    "dev": "npm run lint && npm start"
+    "dev": "npm run lint && npm start",
+    "deploy": "pm2 start --name \"emma-backend\" npm -- start"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,9 @@
   },
   "homepage": "https://emma-ai.com",
   "devDependencies": {
-    "@types/node": ">=11.0.0"
+    "@types/node": ">=11.0.0",
+    "eslint": "^6.7.2",
+    "pm2": "^4.2.1"
   },
   "dependencies": {
     "cors": "^2.8.5",
