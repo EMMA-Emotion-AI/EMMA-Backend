@@ -21,8 +21,15 @@ Then navigate to the folder.<br><br>
 $ `npm install`<br><br>
 4. Copy `config.template.js` and paste it as `config.js` <br><br>
 5. Configure it in your favourite editor by editing `config.json`<br><br>
-6. Start it by running <br>
-$ `npm start`
+7. Install required **global** packages for development and deployment: <br>
+$ `npm i -g eslint` <br>
+$ `npm i -g pm2` <br>
+8. Start it by running <br>
+$ `npm start` <br>
+or lint and start it by using <br>
+$ `npm run dev` <br>
+or deploy it using [pm2]() by using <br>
+$ `npm run deploy`
 
 <hr>
 
