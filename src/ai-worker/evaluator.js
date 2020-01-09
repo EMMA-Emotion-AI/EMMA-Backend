@@ -33,7 +33,7 @@ let evaluate = async function(req, res){
         }, 400);
     }
 
-    let classifier = await Classifier.create(0.05, rethink);
+    let classifier = await Classifier.create(0.005, rethink);
 
     classifier.classify(text, (err, result) => {
         if (err){
