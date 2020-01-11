@@ -1,8 +1,8 @@
 "use strict";
 
-// ========================= //
-// = Copyright (c) NullDev = //
-// ========================= //
+// ====================== //
+// = Copyright (c) EMMA = //
+// ====================== //
 
 let getWords = function(input){
     let filtered = input.toString().replace(/[^0-9a-zA-Z ]/g, "");
@@ -62,7 +62,7 @@ let getStopwords = function(){
         "man,manche,mit,musste," +                                                      /* m */
         "nach,nicht,nichts,noch,nun,nur," +                                             /* n */
         "ob,oder,ohne," +                                                               /* o */
-        "per,plötzlich" +                                                               /* p */
+        "per,plötzlich," +                                                              /* p */
         "quasi," +                                                                      /* q */
         "reagiere,reagieren,reagiert,reagierte,recht,rechts,regelmäßig,reichlich," +    /* r */
         "sehr,sein,selbst,so,solche,soll,sonst," +                                      /* s */
@@ -70,8 +70,8 @@ let getStopwords = function(){
         "um,und,unter," +                                                               /* u */
         "viel,von," +                                                                   /* v */
         "war,warst,was,weg,weil,weiter,welches,wenn,werden,wie,wieder,will,wir,wird," + /* w */
-        "x" +                                                                           /* x */
-        "y" +                                                                           /* y */
+        "" +                                                                            /* x */
+        "" +                                                                            /* y */
         "zu,zum,zur,zwar"                                                               /* z */
     ).split(",");
 };
