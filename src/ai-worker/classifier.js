@@ -76,8 +76,13 @@ class Classifier {
     recordProbability(probability){
         if (isNaN(probability)) return;
 
-        this.totalProbability = (this.totalProbability === 0) ? probability : this.totalProbability * probability;
-        this.inverseTotalProbability = (this.inverseTotalProbability === 0) ? (1 - probability) : this.inverseTotalProbability * (1 - probability);
+        this.totalProbability = (this.totalProbability === 0)
+            ? probability
+            : this.totalProbability * probability;
+
+        this.inverseTotalProbability = (this.inverseTotalProbability === 0)
+            ? (1 - probability)
+            : this.inverseTotalProbability * (1 - probability);
     }
 
     combineProbabilities(){
