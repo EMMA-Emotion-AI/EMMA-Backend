@@ -7,6 +7,12 @@
 
 <hr>
 
+## Presentation (German)
+
+https://1drv.ms/p/s!AsoWFbkwGvx8gmm4qG4fvHIzfQJw?e=h9mX27
+
+<hr>
+
 ## :wrench: Setup
 
 0. Open up your favourite terminal (and navigate somewhere you want to download the repository to). <br><br>
