@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "helmet": "^3.21.2",
     "rethinkdbdash": "^2.3.31",
     "serve-favicon": "^2.5.0"
